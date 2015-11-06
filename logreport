@@ -1,0 +1,39 @@
+ #!/bin/bash
+
+ echo Tomcat Logs 
+ count1=$(tail -100  /platform/tomcat/logs/catalina.out | grep 'Start'  |  wc  -l)
+ #echo  Total no of  Starting configuration poller=$count1
+
+ count11=$(tail -100  /platform/tomcat/logs/catalina.out | grep 'Endpoint'  |  wc  -l)
+ #echo Total no of Endpoint to use for configuration access in this poll NodeEndPoint=$count11
+
+ echo  Total noumber of  sucessfull connections= $(($count1+$count11))/100 lines.
+ echo  Mysql Exception in Tomcat Logs
+ count2=$(tail -1000 /platform/tomcat/logs/catalina.out | grep 'jdbc4.MySQLSyntaxErrorException:'  |  wc  -l)
+ echo Total no of  MySQLSyntaxErrorException=$count2 out 0f 1000 Lines
+
+ count3=$(tail -100 /platform/tomcat/logs/catalina.out | grep 'jdbc4.MySQLSyntaxErrorException:'  |  wc  -l)
+ echo Total no of  MySQLSyntaxErrorException=$count3 out 0f 100 Lines
+echo Apache Logs
+
+echo   Access Logs
+echo  Total no of lines where value=200 out 1000 Lines
+tail  -1000    /usr/local/apache2/logs/access_log  |awk '$9 == 200 { print $0}'  |wc  -l
+echo  Total no of lines where value=200 out 100 Lines
+tail  -100    /usr/local/apache2/logs/access_log  |awk '$9 == 200 { print $0}'  |wc  -l
+echo   Error Logs
+echo   Total no of  lines where value=500 out of 500 Lines
+tail  -500    /usr/local/apache2/logs/error_log  |awk '$9 == 500 { print $0}'  |wc  -l
+echo ElasticCache logs
+echo Total no of ZarangaElasticCache Exception out of 1000 Lines
+
+tail -1000 /platform/logs/amazonstack.log | grep ' c.z.u.a.ZarangaElasticCache'  |  wc  -l
+
+
+if [ "$count3" -ge 1 ]
+then
+echo "Running out of space FRONT-END-SERVER-1"
+mail -s "Alert:" jitendrab@vaycayhero.com
+  fi
+
+

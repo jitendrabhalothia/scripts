@@ -1,0 +1,13 @@
+ #!/bin/sh
+df -H | grep -vE '^Filesystem|tmpfs|cdrom' | awk '{ print $5 " " $6 }' | while read output;
+do
+  #echo $output
+  usage=$(echo $output | awk '{ print $1}' | cut -d'%' -f1 )
+  partition=$(echo $output | awk '{ print $2 }' )
+  if [ $usage -ge 60 ]; then
+    echo "Running out of space FRONT-END-SERVER-1 \"$partition ($usage%)\" on $(hostname) as on $(date), please check!" |
+     mail -s "Alert: partition \"$partition\" almost out of disk space $usage%" jitendrab@vaycayhero.com
+  fi
+done
+
+
