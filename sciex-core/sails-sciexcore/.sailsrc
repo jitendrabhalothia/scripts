@@ -1,0 +1,7 @@
+{
+  "generators": {
+    "modules": {
+    	"neev-generator" : "node_modules/neev-generator"
+    }
+  }
+}
